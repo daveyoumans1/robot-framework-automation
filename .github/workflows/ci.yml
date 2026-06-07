@@ -1,0 +1,78 @@
+name: Robot Framework Tests
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: '0 9 * * 1-5'
+
+jobs:
+  web-tests:
+    name: Web Tests (Chrome)
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run web tests
+        run: |
+          robot \
+            --variable HEADLESS:True \
+            --outputdir results/web \
+            --log log.html \
+            --report report.html \
+            --loglevel DEBUG \
+            tests/web/
+        continue-on-error: true
+
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: robot-web-results
+          path: results/web/
+          retention-days: 7
+
+  api-tests:
+    name: API Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run API tests
+        run: |
+          robot \
+            --outputdir results/api \
+            --log log.html \
+            --report report.html \
+            --loglevel DEBUG \
+            tests/api/
+
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: robot-api-results
+          path: results/api/
+          retention-days: 7
