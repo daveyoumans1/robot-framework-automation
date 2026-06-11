@@ -13,6 +13,7 @@ ${LOCKED_USER}          locked_out_user
 # --- API ---
 ${API_BASE_URL}         https://reqres.in/api
 ${API_TIMEOUT}          10s
+${REQRES_API_KEY}       %{REQRES_API_KEY=}
 
 # --- Timeouts ---
 ${ELEMENT_TIMEOUT}      15s
