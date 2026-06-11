@@ -7,7 +7,8 @@ Resource   ../variables/variables.robot
 *** Keywords ***
 Create API Session
     [Documentation]    Creates a persistent requests session for all API tests.
-    Create Session    reqres    ${API_BASE_URL}    verify=True
+    ${headers}=    Create Dictionary    x-api-key=${REQRES_API_KEY}
+    Create Session    reqres    ${API_BASE_URL}    headers=${headers}    verify=True
 
 GET Users
     [Arguments]    ${page}=1
